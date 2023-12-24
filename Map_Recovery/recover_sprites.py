@@ -10,6 +10,7 @@ import numpy as np
 import sys
 import os
 
+
 def split_image(input_path, output_path, sprite_size):
     # Open the BMP image that we manually created from the source image
     # Original Image is from https://www.cpc-power.com/
@@ -128,7 +129,7 @@ if __name__ == "__main__":
     if not os.path.isfile(input_path):
         print("The input file does not exist")
         sys.exit()
-    output_path = "sprites"
+    output_path = "export"
     sprite_size = 16
 
     split_image(input_path, output_path, sprite_size)

@@ -44,10 +44,26 @@ class SMach:
         self.player_map_y = 99
         self.player_x = self.player_map_x * self.sprite_size
         self.player_y = self.player_map_y * self.sprite_size
-        self.play_direction = 0
+
+        # Player direction and speed
+        self.player_direction = 0
         self.player_speed = 0
+
+        # Player is an allowed area (street or green area)
         self.player_allowed = True
+
+        # Check if player is in allowed area
         self.check_allowed_area = True
+
+        # Player start and end time
+        self.player_starttime = 0
+        self.player_endtime = 0
+        self.player_time_running = False
+
+        # Player Time for Day, Night and Winter
+        self.player_time_day = 0
+        self.player_time_night = 0
+        self.player_time_winter = 0
 
         # Initialize the sprites
         self.sprites = Sprites(self, size=self.sprite_size)
@@ -74,13 +90,13 @@ class SMach:
             sys.exit()
         # Adjust player position based on keys pressed
         if keys[pg.K_LEFT]:
-            self.play_direction += int(4+self.player_speed/10)
-            if self.play_direction >= 360:
-                self.play_direction = 0
+            self.player_direction += int(4+self.player_speed/10)
+            if self.player_direction >= 360:
+                self.player_direction = 0
         if keys[pg.K_RIGHT]:
-            self.play_direction -= int(4+self.player_speed/10)
-            if self.play_direction <= 0:
-                self.play_direction = 360
+            self.player_direction -= int(4+self.player_speed/10)
+            if self.player_direction <= 0:
+                self.player_direction = 360
         if keys[pg.K_UP]:
             if not self.player_speed < 0:
                 self.player_speed += 2
@@ -114,87 +130,39 @@ class SMach:
                 self.mode = 'winter'
 
     def draw(self):
-        # Clear the screen fill with Backgroundcolor
-        if self.mode == 'day':
-            self.screen.fill(settings.BG_COLOR_DAY)
-        elif self.mode == 'night':
-            self.screen.fill(settings.BG_COLOR_NIGHT)
-        elif self.mode == 'winter':
-            self.screen.fill(settings.BG_COLOR_WINTER)
-
-        # Calculate new player position
-        self.player_x, self.player_y = self.calculate_new_position(self.player_x,
-                                                                   self.player_y,
-                                                                   self.player_speed,
-                                                                   self.play_direction)
-        # Calculate the players position on the map
-        self.player_map_x = int(self.player_x // self.sprite_size)
-        self.player_map_y = int(self.player_y // self.sprite_size)
-
-        # Check if we drive over the start line
-        # y=97 and x is 42,43,44 and direction is between 0 +- 90 degree
-        if ((self.player_map_y == 97) and (self.player_map_x in [42, 43, 44]) and
-                ((self.play_direction in range(0, 89)) or (self.play_direction in range(271, 360)))):
-            print("Start")
-
-        # Check if we are driving over the finish line
-        # x=46 and y is 100,101,102 and direction is between 90 +- 90 degree
-        if ((self.player_map_x == 46) and (self.player_map_y in [100, 101, 102]) and
-                (self.play_direction in range(1, 179))):
-            print("Finish")
-
-        # Check if we are trying to drive over the finish line in the wrong direction
-        # x=46 and y is 100,101,102 and direction is between 270 +- 90 degree
-        if ((self.player_map_x == 46) and (self.player_map_y in [100, 101, 102]) and
-                (self.play_direction in range(181, 359))):
-            print("Wrong direction")
-            self.player_x = 44 * self.sprite_size
-            self.player_y = 101 * self.sprite_size
-            self.play_direction = 0
-            self.player_speed = 0
-
-        # Check if Player is in allowed area
-        self.player_allowed = self.player.check_allowed_area(self.player_map_x, self.player_map_y)
-
-        # if player is not in allowed area set speed to 0
-        if not self.player_allowed and self.check_allowed_area:
-            if self.player_speed > 20:
-                # Car was too fast... crash...
-                pass
-            self.player_speed = 0
-
         # Draw the background
         self.map.draw(self.player_x-(self.sizex//2), self.player_y-(self.sizey//2))
 
         # Draw Debug
         if self.debug:
-            self.drawdebug()
+            # Draw the debug sprite
+            sprite = self.map.draw_debug_sprite(self.player_map_x, self.player_map_y)
+            text = self.font.render(f'Player x: {self.player_x:.1f} y:{self.player_y:.1f} '
+                                    f'dir:{self.player_direction:.1f} spd:{self.player_speed:.1f}', True,
+                                    (255, 0, 0))  # You can change the text and color here
+            self.screen.blit(text, (10, 10))  # Adjust the position of the text
+
+            text = self.font.render(f'Map x: {self.player_map_x} y:{self.player_map_y} - '
+                                    f'Shitf x: {int(self.player_x % self.sprites.size - 8)} '
+                                    f'y:{int(self.player_y % self.sprites.size - 8)} Pixel - '
+                                    f'Alwd: {self.player_allowed} - ChkAlwd: {self.check_allowed_area} - '
+                                    f'Sprite: {sprite}',
+                                    True, (255, 0, 0))
+            self.screen.blit(text, (10, 40))
+
+        # Draw the Timewatch
+        text = self.font.render(f'{self.formattime(self.player_starttime, self.player_endtime)}', True, (255, 0, 0))
+        self.screen.blit(text, (10, self.screen_height-40))
 
         # Draw the player
-        self.player.draw(self.play_direction)
+        self.player.draw(self.player_direction)
 
         # Update the display
         pg.display.flip()
 
         # Calculate the time since the last frame
         self.delta_time = self.clock.tick(30)
-        pg.display.set_caption(f'{self.clock.get_fps():.1f}')
-
-    def drawdebug(self):
-        # Draw the debug sprite
-        sprite = self.map.draw_debug_sprite(self.player_map_x, self.player_map_y)
-        text = self.font.render(f'Player x: {self.player_x:.1f} y:{self.player_y:.1f} '
-                                f'dir:{self.play_direction:.1f} spd:{self.player_speed:.1f}', True,
-                                (255, 0, 0))  # You can change the text and color here
-        self.screen.blit(text, (10, 10))  # Adjust the position of the text
-
-        text = self.font.render(f'Map x: {self.player_map_x} y:{self.player_map_y} - '
-                                f'Shitf x: {int(self.player_x % self.sprites.size - 8)} '
-                                f'y:{int(self.player_y % self.sprites.size - 8)} Pixel - '
-                                f'Alwd: {self.player_allowed} - ChkAlwd: {self.check_allowed_area} - '
-                                f'Sprite: {sprite}',
-                                True, (255, 0, 0))
-        self.screen.blit(text, (10, 40))
+        pg.display.set_caption(f'Street Machine - {self.clock.get_fps():.1f} fps')
 
     def calculate_new_position(self, x, y, speed, direction):
         # calculate new postion for x and y out of speed and direction
@@ -223,6 +191,14 @@ class SMach:
         # Return new position
         return x, y
 
+    def formattime(self, starttime, endtime):
+        ticks = endtime - starttime
+        millis = int(ticks) % 100
+        seconds = int(ticks / 1000 % 60)
+        minutes = int(ticks / 60000 % 24)
+
+        return f'{minutes:02d}:{seconds:02d}:{millis:02d}'
+
     # Game loop
     def mainloop(self):
         while True:
@@ -231,6 +207,76 @@ class SMach:
 
             # Draw everything
             self.draw()
+
+            ticks = pg.time.get_ticks()
+            if self.player_time_running:
+                self.player_endtime = ticks
+
+            # Clear the screen fill with Backgroundcolor
+            if self.mode == 'day':
+                self.screen.fill(settings.BG_COLOR_DAY)
+            elif self.mode == 'night':
+                self.screen.fill(settings.BG_COLOR_NIGHT)
+            elif self.mode == 'winter':
+                self.screen.fill(settings.BG_COLOR_WINTER)
+
+            # Calculate new player position
+            self.player_x, self.player_y = self.calculate_new_position(self.player_x,
+                                                                       self.player_y,
+                                                                       self.player_speed,
+                                                                       self.player_direction)
+            # Calculate the players position on the map
+            self.player_map_x = int(self.player_x // self.sprite_size)
+            self.player_map_y = int(self.player_y // self.sprite_size)
+
+            # Check if we drive over the start line
+            # y=97 and x is 42,43,44 and direction is between 0 +- 90 degree
+            if ((self.player_map_y == 97) and (self.player_map_x in [42, 43, 44]) and
+                    ((self.player_direction in range(0, 89)) or (self.player_direction in range(271, 360)))
+                    and not self.player_time_running):
+                self.player_time_running = True
+                self.player_starttime = ticks
+                self.player_endtime = ticks
+
+            # Check if we are driving over the finish line
+            # x=46 and y is 100,101,102 and direction is between 90 +- 90 degree
+            if ((self.player_map_x == 46) and (self.player_map_y in [100, 101, 102]) and
+                    (self.player_direction in range(1, 179)) and self.player_time_running):
+                self.player_time_running = False
+                self.player_endtime = ticks
+                self.player_x = 44 * self.sprite_size
+                self.player_y = 99 * self.sprite_size
+                self.player_direction = 0
+                self.player_speed = 0
+                if self.mode == 'day':
+                    self.player_time_day = self.player_endtime - self.player_starttime
+                    self.mode = 'night'
+                elif self.mode == 'night':
+                    self.player_time_night = self.player_endtime - self.player_starttime
+                    self.mode = 'winter'
+                elif self.mode == 'winter':
+                    self.player_time_winter = self.player_endtime - self.player_starttime
+                    # Game Ende - Highscore?
+                    pass
+
+            # Check if we are trying to drive over the finish line in the wrong direction
+            # x=46 and y is 100,101,102 and direction is between 270 +- 90 degree
+            if ((self.player_map_x == 46) and (self.player_map_y in [100, 101, 102]) and
+                    (self.player_direction in range(181, 359))):
+                print("Wrong direction")
+                self.player_x = 44 * self.sprite_size
+                self.player_y = 101 * self.sprite_size
+                self.player_speed = 0
+
+            # Check if Player is in allowed area
+            self.player_allowed = self.player.check_allowed_area(self.player_map_x, self.player_map_y)
+
+            # if player is not in allowed area set speed to 0
+            if not self.player_allowed and self.check_allowed_area:
+                if self.player_speed > 20:
+                    # Car was too fast... crash...
+                    pass
+                self.player_speed = 0
 
 
 if __name__ == "__main__":

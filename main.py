@@ -128,10 +128,10 @@ class SMach:
                 if self.player_speed >= 100:
                     self.player_speed = 100
             if keys[pg.K_DOWN]:
-                if (self.player_speed - 10) <= 0:
+                if (self.player_speed - 5) <= 0:
                     self.player_speed = 0
                 else:
-                    self.player_speed -= 10
+                    self.player_speed -= 5
                 if self.player_speed == 0:
                     self.player_speed = 0
                 if self.player_speed < 0:
@@ -187,7 +187,7 @@ class SMach:
             text = self.font_small.render(f'Map x: {self.player_map_x} y:{self.player_map_y} - '
                                           f'Shitf x: {int(self.player_x % self.sprites.size - 8)} '
                                           f'y:{int(self.player_y % self.sprites.size - 8)} Pixel - '
-                                          f'Alwd: {self.player_allowed} - ChkAlwd: {self.check_allowed_area} - ',
+                                          f'Alwd: {self.player_allowed} - ChkAlwd: {self.check_allowed_area}',
                                           True, (255, 0, 0))
             self.screen.blit(text, (10, 40))
 
@@ -291,6 +291,7 @@ class SMach:
                 self.player_y = 99 * self.sprite_size
                 self.player_direction = 0
                 self.player_speed = 0
+                self.player_damage = 0
                 if self.mode == 'day':
                     self.player_time_day = self.player_endtime - self.player_starttime
                     self.mode = 'night'

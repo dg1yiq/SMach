@@ -23,37 +23,33 @@ class Highscore:
 
     def ask_for_name(self, score):
 
-        input_box = pg.Rect(300, 250, 200, 40)
-        color_inactive = pg.Color('lightskyblue3')
-        color_active = pg.Color('dodgerblue2')
-        color = color_inactive
         text = ''
-        active = False
-        font = pg.font.Font(None, 36)
+        font = pg.font.Font(None, 72)
 
         running = True
-        while (running):
+        while running:
             for event in pg.event.get():
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    if input_box.collidepoint(event.pos):
-                        active = not active
-                    else:
-                        active = False
-                    color = color_active if active else color_inactive
                 if event.type == pg.KEYDOWN:
-                    if active:
-                        if event.key == pg.K_RETURN:
-                            running = False
-                        elif event.key == pg.K_BACKSPACE:
-                            text = text[:-1]
-                        else:
-                            text += event.unicode
+                    if event.key == pg.K_RETURN:
+                        running = False
+                    elif event.key == pg.K_BACKSPACE:
+                        text = text[:-1]
+                    elif len(text) < 15:
+                        text += event.unicode
 
             # Render the input box
             image = pg.image.load("highscore.png")
             self.game.screen.blit(image, (0, 0))
-            pg.draw.rect(self.game.screen, color, input_box, 2)
-            txt_surface = font.render(text, True, color)
+            # Draw "Highscore" Text
+            text1 = self.game.font_big.render(f'Highscore', True, (255, 255, 0))
+            self.game.screen.blit(text1, (self.game.screen_width // 2 - 150, 50))
+            # Draw "Highscore" Text
+            text2 = self.game.font_normal.render(f'Enter your Name', True, (255, 255, 0))
+            self.game.screen.blit(text2, (self.game.screen_width // 2 - 360, 350))
+            # Draw inputbox
+            input_box = pg.Rect(150, 400, self.game.screen_width-300, 60)
+            pg.draw.rect(self.game.screen, (255, 255, 0), input_box, 2)
+            txt_surface = font.render(text, True, (255, 255, 0))
             width = max(200, txt_surface.get_width() + 10)
             input_box.w = width
             self.game.screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))

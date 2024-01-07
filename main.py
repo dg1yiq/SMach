@@ -4,6 +4,8 @@
 # License: GNU GPL 3.0
 # Description: This is a simple clone of StreetMachine for the CPC 464
 #
+# Todo: geht noch nicht: python -m PyInstaller --add-data="files/highscore.png:files" main.py
+#
 
 import settings as settings
 import pygame as pg

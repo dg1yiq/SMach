@@ -5,3 +5,7 @@ __pycache__/
 *$py.class
 *.log
 highscore.txt
+dist/
+build/
+*.spec
+

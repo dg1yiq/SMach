@@ -7,7 +7,7 @@ class Highscore:
         self.game = game
         self.highscore = []
         self.highscore_max = 9
-        self.highscore_file = "highscore.txt"
+        self.highscore_file = "files/highscore.txt"
         self.load_highscore()
 
     def load_highscore(self):
@@ -38,7 +38,7 @@ class Highscore:
                         text += event.unicode
 
             # Render the input box
-            image = pg.image.load("highscore.png")
+            image = pg.image.load("files/highscore.png")
             self.game.screen.blit(image, (0, 0))
             # Draw "Highscore" Text
             text1 = self.game.font_big.render(f'Highscore', True, (255, 255, 0))
@@ -67,7 +67,7 @@ class Highscore:
 
     def draw(self):
         # Draw an Image "highscore.png" in the middle of the screen as background
-        image = pg.image.load("highscore.png")
+        image = pg.image.load("files/highscore.png")
         self.game.screen.blit(image, (0, 0))
 
         # Calculate the time since the last frame

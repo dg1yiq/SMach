@@ -26,11 +26,12 @@ class Sprites:
         else:
             # Import the sprite array from sprites_array.py
             from sprites_array import sprites
+            from sprites_array import summer_color
             self.sprites = sprites
             # Create the sprite images
             # Iterate over the sprite array
             for sprite_array in sprites:
-                sprite_surface = self.create_sprite_image(sprite_array, self.size)
+                sprite_surface = self.create_sprite_image(sprite_array, summer_color, self.size)
                 self.images.append(sprite_surface)
 
     def load_sprite_from_files(self):
@@ -42,11 +43,12 @@ class Sprites:
             # Load and append the sprite image to the list
             self.images.append(pg.image.load(sprite_path).convert_alpha())
 
-    def create_sprite_image(self, sprite_array, sprite_size):
+    def create_sprite_image(self, sprite_array, color, sprite_size):
         # Create a new surface with the correct dimensions and transparency
         surface = pg.Surface((sprite_size, sprite_size), pg.SRCALPHA)
         # Iterate over the sprite array
         for y, row in enumerate(sprite_array):
             for x, pixel in enumerate(row):
-                surface.set_at((x, y), pixel)
+                finalpixel = color[pixel[0]] + (pixel[1],)
+                surface.set_at((x, y), finalpixel)
         return surface

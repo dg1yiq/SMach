@@ -28,7 +28,10 @@ class Player:
         else:
             # Import the sprite array from sprites_array.py
             from sprites_array import player_sprite
-            self.player_sprite = pg.transform.scale(self.create_sprite_image(player_sprite, self.sprite_size),
+            from sprites_array import summer_color
+            self.player_sprite = pg.transform.scale(self.create_sprite_image(player_sprite,
+                                                                             summer_color,
+                                                                             self.sprite_size),
                                                     (self.sprite_size * self.game.zoom_factor,
                                                      self.sprite_size * self.game.zoom_factor))
 
@@ -45,13 +48,14 @@ class Player:
         player_rect = rotated_player.get_rect(center=(self.game.screen_width // 2, self.game.screen_height // 2))
         self.game.screen.blit(rotated_player, player_rect.topleft)
 
-    def create_sprite_image(self, sprite_array, sprite_size):
+    def create_sprite_image(self, sprite_array, color, sprite_size):
         # Create a new surface with the correct dimensions and transparency
         surface = pg.Surface((sprite_size, sprite_size), pg.SRCALPHA)
         # Iterate over the sprite array
         for y, row in enumerate(sprite_array):
             for x, pixel in enumerate(row):
-                surface.set_at((x, y), pixel)
+                finalpixel = color[pixel[0]] + (pixel[1],)
+                surface.set_at((x, y), finalpixel)
         return surface
 
     def check_allowed_area(self, x, y):

@@ -155,10 +155,13 @@ class SMach:
                 # Flip between day, night and winter level
                 if keys[pg.K_n]:
                     self.mode = 'night'
+                    self.sprites.load_sprites()
                 if keys[pg.K_d]:
                     self.mode = 'day'
+                    self.sprites.load_sprites()
                 if keys[pg.K_w]:
                     self.mode = 'winter'
+                    self.sprites.load_sprites()
                 # Reset Player Damage
                 if keys[pg.K_r]:
                     self.player_damage = 0
@@ -297,11 +300,14 @@ class SMach:
                 if self.mode == 'day':
                     self.player_time_day = self.player_endtime - self.player_starttime
                     self.mode = 'night'
+                    self.sprites.load_sprites()
                 elif self.mode == 'night':
                     self.player_time_night = self.player_endtime - self.player_starttime
                     self.mode = 'winter'
+                    self.sprites.load_sprites()
                 elif self.mode == 'winter':
                     self.player_time_winter = self.player_endtime - self.player_starttime
+                    self.sprites.load_sprites()
                     self.highscore.ask_for_name((self.player_time_day +
                                                  self.player_time_night +
                                                  self.player_time_winter) / 3)

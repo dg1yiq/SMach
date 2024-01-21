@@ -6,20 +6,54 @@
 #
 
 summer_color = [
-    (0, 0, 0),
-    (146, 0, 0),
-    (255, 0, 255),
-    (255, 255, 0),
-    (99, 101, 99),
-    (99, 0, 0),
-    (255, 255, 255),
-    (0, 255, 0),
-    (255, 146, 0),
-    (99, 101, 0),
-    (255, 101, 0),
-    (255, 0, 0),
-    (99, 0, 255),
-    (0, 255, 255)
+    (0, 0, 0),          # Black
+    (146, 0, 0),        # Dark Red
+    (255, 0, 255),      # Magenta
+    (255, 255, 0),      # Yellow
+    (99, 101, 99),      # Dark Gray
+    (99, 0, 0),         # Very Dark Red
+    (255, 255, 255),    # White
+    (0, 255, 0),        # Green
+    (255, 146, 0),      # Orange
+    (99, 101, 0),       # Olive
+    (255, 101, 0),      # Orange Red
+    (255, 0, 0),        # Red
+    (99, 0, 255),       # Purple
+    (0, 255, 255)       # Cyan
+]
+
+night_color = [
+    (0, 0, 0),          # Black
+    (146, 0, 0),        # Dark Red
+    (255, 0, 255),      # Magenta
+    (255, 255, 0),      # Yellow
+    (0, 0, 0),          # Black
+    (99, 0, 0),         # Very Dark Red
+    (255, 255, 255),    # White
+    (0, 0, 255),        # Dark BLue
+    (255, 146, 0),      # Orange
+    (99, 101, 0),       # Olive
+    (255, 101, 0),      # Orange Red
+    (0, 101, 99),       # Light grey green
+    (99, 0, 255),       # Purple
+    (0, 255, 255)       # Cyan
+]
+
+winter_color = [
+    (0, 0, 0),          # Black
+    (146, 0, 0),        # Dark Red
+    (255, 0, 255),      # Magenta
+    (255, 255, 0),      # Yellow
+    (255,255,255),      # White
+    (99, 0, 0),         # Very Dark Red
+    (255, 255, 255),    # White
+    (0, 255, 0),        # Green
+    (255, 146, 0),      # Orange
+    (99, 101, 0),       # Olive
+    (255, 101, 0),      # Orange Red
+    (255, 255, 255),    # White
+    (99, 0, 255),       # Purple
+    (0, 255, 255)       # Cyan
 ]
 
 # This array contains the car sprite 2d array x,y coordinates and color index (0-15) and Alpha (0-255)

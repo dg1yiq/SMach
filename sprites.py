@@ -17,21 +17,37 @@ class Sprites:
         # Size of your sprites in Pixels
         self.size = size
         # List to store loaded sprite images
-        self.images = []
+        self.images = None
         self.usefiles = usefiles
+        self.color = None
 
+        # Import the sprite array from sprites_array.py
+        from sprites_array import sprites
+        self.sprites = sprites
+
+        # Load the sprites
+        self.load_sprites()
+
+    def load_sprites(self):
+        from sprites_array import summer_color, winter_color, night_color
+        self.images = []
         # Load the sprites from PNG Files or from sprites_array.py
         if self.usefiles:
             self.load_sprite_from_files()
         else:
-            # Import the sprite array from sprites_array.py
-            from sprites_array import sprites
-            from sprites_array import summer_color
-            self.sprites = sprites
             # Create the sprite images
             # Iterate over the sprite array
-            for sprite_array in sprites:
-                sprite_surface = self.create_sprite_image(sprite_array, summer_color, self.size)
+            print(self.game.mode)
+            if self.game.mode == "day":
+                self.color = summer_color
+            elif self.game.mode == "winter":
+                self.color = winter_color
+            elif self.game.mode == "night":
+                self.color = night_color
+            else:
+                self.color = summer_color
+            for sprite_array in self.sprites:
+                sprite_surface = self.create_sprite_image(sprite_array, self.color, self.size)
                 self.images.append(sprite_surface)
 
     def load_sprite_from_files(self):

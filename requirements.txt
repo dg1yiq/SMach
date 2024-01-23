@@ -1,4 +1,4 @@
-Pillow==10.1.0
+Pillow==10.2.0
 pygame==2.5.2
 setuptools==68.2.2
 numpy~=1.26.2

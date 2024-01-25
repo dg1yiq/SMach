@@ -7,3 +7,9 @@ Todo...
 ## Hints
 
 Todo..
+
+## Make Installer
+
+python -m pip install pyinstaller
+
+python -m PyInstaller smach.py
